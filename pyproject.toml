@@ -1,0 +1,11 @@
+
+[project]
+name = "espn-scraper"
+version = "0.1.0"
+description = "ESPN ingestion and processing service"
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = [
+    "requests>=2.33"
+]
