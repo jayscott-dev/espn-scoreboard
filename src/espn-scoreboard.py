@@ -14,7 +14,7 @@ from nba.scoreboard import NBAScoreboard
 URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 
 def parse_args() -> argparse.Namespace:
-    p = argparse.ArgumentParser(description = "Scrape ESPN website for NBA game data")
+    p = argparse.ArgumentParser(description = "ESPN client for sports data")
     p.add_argument(
         "-wd",
         "--write-data",
