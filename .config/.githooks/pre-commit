@@ -1,0 +1,16 @@
+#!/bin/zsh
+
+# Get the directory of this script
+SCRIPTDIR="$(cd "$(dirname "${(%):-%x}")" >/dev/null 2>&1 && pwd)"
+
+# Loop through all executable scripts in pre-commit.d
+for script in "$SCRIPTDIR"/pre-commit.d/*; do
+    if [[ -x "$script" ]]; then
+        # echo "Running $script..."
+        "$script" "$@"
+        if [[ $? -ne 0 ]]; then
+            echo "Error: $script failed."
+            exit 1
+        fi
+    fi
+done
