@@ -33,7 +33,7 @@ def fetch_nba_scoreboard() -> dict:
     return resp.json()
 
 def write_scoreboard_data(data: dict):
-    with open("../scoreboard.json", "w") as file:
+    with open("../data/nba_scoreboard.json", "w") as file:
         json.dump(data, file, indent = 4)
 
 def main() -> int:

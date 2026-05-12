@@ -18,7 +18,7 @@ class NBATeam:
             id = team.get("id", ""),
             name = team.get("name", ""),
             display_name = team.get("displayName", ""),
-            home = ("home" == competitor.get("home", "")),
+            home = ("home" == competitor.get("homeAway", "")),
             score = competitor.get("score", "0"),
             leaders = [StatLeader.from_dict(leader) for leader in competitor.get("leaders", [])],
         )

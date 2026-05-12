@@ -12,11 +12,14 @@ class NBAGame:
     teams: dict
     completed: bool
     status: str
+    series_data: str
 
     @classmethod
     def from_dict(cls, game: dict) -> "NBAGame":
         competitions = game.get("competitions", [])[0]
         completed = competitions.get("status", {}).get("type", {}).get("completed", False)
+
+        # notes[0]["headline"]
 
         teams = {}
         for team in competitions.get("competitors", []):
@@ -29,6 +32,7 @@ class NBAGame:
             teams = teams,
             completed = completed,
             status = "Final" if completed else "Current",
+            series_data = competitions.get("notes", [])[0]["headline"],
         )
 
     def home_team(self) -> NBATeam:
@@ -39,12 +43,13 @@ class NBAGame:
 
     def print_game_data(self):
         print(f"\n{self.name}")
+        print(f"{self.series_data}")
         print(f"Time: {convert_dt(self.date).strftime("%I:%M %p")}")
         print(f"{self.status} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
         points_leader = self.find_overall_points_leader()
         if points_leader is not None:
-            print(f"Overall Point Leader: {points_leader.athlete_name}, {points_leader.value}")
+            print(f"Overall Points Leader: {points_leader.athlete_name}, {points_leader.value}")
 
         rebounds_leader = self.find_overall_rebounds_leader()
         if rebounds_leader is not None:
