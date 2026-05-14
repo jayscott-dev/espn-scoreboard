@@ -11,7 +11,6 @@ class NBAGame:
     date: str
     teams: dict
     completed: bool
-    status: str
     series_data: str
     metadata: GameMetadata
 
@@ -30,7 +29,6 @@ class NBAGame:
             date = game.get("date", ""),
             teams = teams,
             completed = completed,
-            status = "Final" if completed else "Current",
             series_data = competitions.get("notes", [])[0]["headline"],
             metadata = GameMetadata.from_dict(competitions["status"]),
         )
@@ -45,7 +43,7 @@ class NBAGame:
         print(f"\n{game_title(self)}")
         print(f"{self.series_data}")
         print(f"Time: {convert_dt(self.date).strftime("%I:%M %p")}")
-        print(f"{self.status} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
+        print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
         points_leader = self.find_overall_points_leader()
         if points_leader is not None:
