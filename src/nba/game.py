@@ -11,15 +11,13 @@ class NBAGame:
     date: str
     teams: dict
     completed: bool
-    status: str
     series_data: str
+    metadata: GameMetadata
 
     @classmethod
     def from_dict(cls, game: dict) -> "NBAGame":
         competitions = game.get("competitions", [])[0]
         completed = competitions.get("status", {}).get("type", {}).get("completed", False)
-
-        # notes[0]["headline"]
 
         teams = {}
         for team in competitions.get("competitors", []):
@@ -31,8 +29,8 @@ class NBAGame:
             date = game.get("date", ""),
             teams = teams,
             completed = completed,
-            status = "Final" if completed else "Current",
             series_data = competitions.get("notes", [])[0]["headline"],
+            metadata = GameMetadata.from_dict(competitions["status"]),
         )
 
     def home_team(self) -> NBATeam:
@@ -42,10 +40,10 @@ class NBAGame:
         return self.teams["away"]
 
     def print_game_data(self):
-        print(f"\n{self.name}")
+        print(f"\n{game_title(self)}")
         print(f"{self.series_data}")
         print(f"Time: {convert_dt(self.date).strftime("%I:%M %p")}")
-        print(f"{self.status} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
+        print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
         points_leader = self.find_overall_points_leader()
         if points_leader is not None:
@@ -76,8 +74,27 @@ class NBAGame:
         for team in self.teams.values():
             leaders.append(team.assists_leader())
         return StatLeader.overall_stat_leader(leaders)
+    
+@dataclass
+class GameMetadata:
+    status: str
+    detail: str
+
+    @classmethod
+    def from_dict(cls, metadata: dict) -> "GameMetadata":
+        status_type = metadata["type"]
+        
+        return cls (
+            status = status_type["description"],
+            detail = status_type["detail"],
+        )
 
 def convert_dt(s: str) -> datetime:
     utc_dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
 
     return utc_dt.astimezone(ZoneInfo("America/Chicago"))
+
+def game_title(game: NBAGame) -> str:
+    game_status = game.metadata.detail if game.metadata.status == "In Progress" else game.metadata.status
+
+    return f"{game.name} ({game_status})"

@@ -11,6 +11,7 @@ class NBAScoreboard:
         return cls(games = games)
     
     def print_games(self):
-        print(f"{len(self.games)} Games Today")
+        num_games = len(self.games)
+        print(f"{num_games} Game{'s' if num_games != 1 else ''} Today")
         for game in self.games:
             game.print_game_data() 
