@@ -53,15 +53,15 @@ uv run src/espn-scoreboard.py --write-data
 ## Example Output
 
 ```
-5 Games Today
+1 Game Today
 
-Boston Celtics vs Miami Heat (1:56 - 3rd Quarter)
+Cleveland Cavaliers at Detroit Pistons (10:44 - 2nd Quarter)
 East Semifinals - Game 5
-Time: 07:30 PM
-Current Score: Heat 98 - Celtics 104 (Q3)
-Overall Point Leader: J. Tatum, 28
-Overall Rebounds Leader: B. Adebayo, 11
-Overall Assists Leader: J. Tatum, 6
+Time: 07:00 PM
+Current Score: Cavaliers 30 - Pistons 34
+Overall Points Leader: C. Cunningham, 15.0
+Overall Rebounds Leader: A. Thompson, 4.0
+Overall Assists Leader: A. Thompson, 4.0
 ```
 
 ## Architecture Overview
