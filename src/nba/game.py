@@ -42,7 +42,6 @@ class NBAGame:
         return self.teams["away"]
 
     def print_game_data(self):
-        # print(f"\n{self.name}")
         print(f"\n{game_title(self)}")
         print(f"{self.series_data}")
         print(f"Time: {convert_dt(self.date).strftime("%I:%M %p")}")
