@@ -8,7 +8,6 @@ Planned features and improvements for the ESPN Scoreboard project.
 - [ ] Reduce complexity around `StatLeader`
 - [ ] Add team to `StatLeader`
 - [ ] Optionally restrict `StatLeader`s by stat type
-- [ ] Retrieve games by date
 
 ## Done
 
@@ -19,3 +18,4 @@ Planned features and improvements for the ESPN Scoreboard project.
     - "(Q3 - 1:56)" if in progress (quarter and time remaining)
 - [x] Update Game terminology in display (Games vs Game for only 1 game)
 - [x] Display records for each team (e.g., "48-34")
+- [x] Retrieve games by date
