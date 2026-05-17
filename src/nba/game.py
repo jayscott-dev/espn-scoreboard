@@ -88,7 +88,7 @@ class GameMetadata:
             status = status_type["description"],
             detail = status_type["detail"],
         )
-
+    
 def convert_dt(s: str) -> datetime:
     utc_dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
 

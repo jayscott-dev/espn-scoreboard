@@ -58,7 +58,7 @@ uv run src/espn-scoreboard.py --write-data
 Cleveland Cavaliers at Detroit Pistons (10:44 - 2nd Quarter)
 East Semifinals - Game 5
 Time: 07:00 PM
-Current Score: Cavaliers 30 - Pistons 34
+Current Score: Cavaliers(52-30) 30 - Pistons(60-22) 34
 Overall Points Leader: C. Cunningham, 15.0
 Overall Rebounds Leader: A. Thompson, 4.0
 Overall Assists Leader: A. Thompson, 4.0
