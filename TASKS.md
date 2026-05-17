@@ -8,6 +8,7 @@ Planned features and improvements for the ESPN Scoreboard project.
 - [ ] Reduce complexity around `StatLeader`
 - [ ] Add team to `StatLeader`
 - [ ] Optionally restrict `StatLeader`s by stat type
+- [ ] Retrieve games by date
 
 ## Done
 
