@@ -23,13 +23,19 @@ class NBAGame:
         for team in competitions.get("competitors", []):
             teams[team["homeAway"]] = NBATeam.from_dict(team)
 
+        notes = competitions.get("notes", [])
+        if notes:
+            series_data = notes[0]["headline"]
+        else:
+            series_data = ""
+
 
         return cls(
             name = game.get("name", ""),
             date = game.get("date", ""),
             teams = teams,
             completed = completed,
-            series_data = competitions.get("notes", [])[0]["headline"],
+            series_data = series_data, 
             metadata = GameMetadata.from_dict(competitions["status"]),
         )
 
@@ -41,7 +47,8 @@ class NBAGame:
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")
-        print(f"{self.series_data}")
+        if self.series_data:
+          print(f"{self.series_data}")
         print(f"Time: {convert_dt(self.date).strftime("%I:%M %p")}")
         print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
@@ -88,7 +95,7 @@ class GameMetadata:
             status = status_type["description"],
             detail = status_type["detail"],
         )
-
+    
 def convert_dt(s: str) -> datetime:
     utc_dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
 

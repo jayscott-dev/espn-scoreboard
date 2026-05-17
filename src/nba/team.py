@@ -10,6 +10,7 @@ class NBATeam:
     home: bool
     score: str
     leaders: list
+    record: TeamRecord
 
     @classmethod
     def from_dict(cls, competitor: dict) -> "NBATeam":
@@ -21,10 +22,11 @@ class NBATeam:
             home = ("home" == competitor.get("homeAway", "")),
             score = competitor.get("score", "0"),
             leaders = [StatLeader.from_dict(leader) for leader in competitor.get("leaders", [])],
+            record = TeamRecord.from_list(competitor.get("records", [])),
         )
     
     def build_score_display(self) -> str:
-        return f"{self.name} {self.score}"
+        return f"{self.name}({self.record.overall}) {self.score}"
     
     def points_leader(self) -> Optional[StatLeader]:
         return self.find_stat_leader("points")
@@ -39,3 +41,28 @@ class NBATeam:
         for leader in self.leaders:
             if leader.stat_type == stat_type:
                 return leader
+@dataclass
+class TeamRecord:
+    overall: str
+    home: str
+    away: str
+
+    @classmethod
+    def from_list(cls, records: list) -> "TeamRecord":
+        home_record = ""
+        away_record = ""
+        overall_record = ""
+
+        for record in records:
+            match record["type"]:
+                case "home":
+                    home_record = record["summary"]
+                case "road":
+                    away_record = record["summary"]
+                case _:
+                    overall_record = record["summary"]
+        return cls (
+            home = home_record,
+            away = away_record,
+            overall = overall_record,
+        )
