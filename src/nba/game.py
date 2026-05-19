@@ -13,6 +13,7 @@ class NBAGame:
     completed: bool
     series_data: str
     metadata: GameMetadata
+    series_records: dict[str, SeriesRecord]
 
     @classmethod
     def from_dict(cls, game: dict) -> "NBAGame":
@@ -29,6 +30,10 @@ class NBAGame:
         else:
             series_data = ""
 
+        series_records = {}
+        team_records = competitions.get("series", {}).get("competitors", [])
+        for team_record in team_records:
+            series_records[team_record["id"]] = SeriesRecord.from_dict(team_record)
 
         return cls(
             name = game.get("name", ""),
@@ -37,6 +42,7 @@ class NBAGame:
             completed = completed,
             series_data = series_data, 
             metadata = GameMetadata.from_dict(competitions["status"]),
+            series_records = series_records
         )
 
     def home_team(self) -> NBATeam:
@@ -44,11 +50,14 @@ class NBAGame:
     
     def away_team(self) -> NBATeam:
         return self.teams["away"]
+    
+    def build_series_record(self) -> str:
+        return f"({self.series_records[self.away_team().id].wins} - {self.series_records[self.home_team().id].wins})"
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")
         if self.series_data:
-          print(f"{self.series_data}")
+          print(f"{self.series_data} {self.build_series_record() if self.series_records else ""}")
         print(f"Time: {convert_dt(self.date).strftime("%I:%M %p")}")
         print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
@@ -105,3 +114,15 @@ def game_title(game: NBAGame) -> str:
     game_status = game.metadata.detail if game.metadata.status == "In Progress" else game.metadata.status
 
     return f"{game.name} ({game_status})"
+
+@dataclass
+class SeriesRecord:
+    id: str
+    wins: int
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "SeriesRecord":
+        return cls (
+            id = data["id"],
+            wins = data["wins"],
+        )
