@@ -19,3 +19,4 @@ Planned features and improvements for the ESPN Scoreboard project.
 - [x] Update Game terminology in display (Games vs Game for only 1 game)
 - [x] Display records for each team (e.g., "48-34")
 - [x] Retrieve games by date
+- [x] Add series record: Game 7 (3-3)
