@@ -21,7 +21,7 @@ class NBATeam:
             display_name = team.get("displayName", ""),
             home = ("home" == competitor.get("homeAway", "")),
             score = competitor.get("score", "0"),
-            leaders = [StatLeader.from_dict(leader) for leader in competitor.get("leaders", [])],
+            leaders = [leader for raw in competitor.get("leaders", []) if (leader := StatLeader.from_dict(raw)) is not None],
             record = TeamRecord.from_list(competitor.get("records", [])),
         )
     
