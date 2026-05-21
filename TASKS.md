@@ -4,10 +4,8 @@ Planned features and improvements for the ESPN Scoreboard project.
 
 ## Backlog
 
-- [ ] Probability of winning based off record
-- [ ] Reduce complexity around `StatLeader`
-- [ ] Add team to `StatLeader`
-- [ ] Optionally restrict `StatLeader`s by stat type
+- [ ] Data structure for espn_client
+- [ ] Work on mlb scoreboard
 
 ## Done
 
@@ -20,3 +18,4 @@ Planned features and improvements for the ESPN Scoreboard project.
 - [x] Display records for each team (e.g., "48-34")
 - [x] Retrieve games by date
 - [x] Add series record: Game 7 (3-3)
+- [x] Reduce complexity around `StatLeader`
