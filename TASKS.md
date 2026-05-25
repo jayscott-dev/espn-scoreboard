@@ -11,6 +11,8 @@ Planned features and improvements for the ESPN Scoreboard project.
 - [ ] Work on mlb scoreboard
 - [ ] Add current inning to game title
 - [ ] Current outs to game title
+- [ ] Print date for -d instead of saying Games Today
+- [ ] Put convert_date in its own spot
 
 ## Done
 
