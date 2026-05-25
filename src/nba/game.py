@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
-from zoneinfo import ZoneInfo
+import utils.date as date_utils
 from typing import Optional
 from nba.team import NBATeam
 from nba.stat_leader import StatLeader
@@ -58,7 +57,7 @@ class NBAGame:
         print(f"\n{game_title(self)}")
         if self.series_data:
           print(f"{self.series_data} {self.build_series_record() if self.series_records else ""}")
-        print(f"Time: {convert_dt(self.date).strftime("%I:%M %p")}")
+        print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
         print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
         points_leader = self.find_overall_points_leader()
@@ -105,11 +104,6 @@ class GameMetadata:
             detail = status_type["detail"],
         )
     
-def convert_dt(s: str) -> datetime:
-    utc_dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
-
-    return utc_dt.astimezone(ZoneInfo("America/Chicago"))
-
 def game_title(game: NBAGame) -> str:
     game_status = game.metadata.detail if game.metadata.status == "In Progress" else game.metadata.status
 

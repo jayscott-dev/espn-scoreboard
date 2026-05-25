@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
-from zoneinfo import ZoneInfo
+import utils.date as date_utils
 from typing import Optional
 from mlb.team import MLBTeam
 
@@ -32,13 +31,8 @@ class MLBGame:
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")
-        print(f"Time: {convert_dt(self.date).strftime("%I:%M %p")}")
+        print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
         print(f"Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
-
-def convert_dt(s: str) -> datetime:
-    utc_dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
-
-    return utc_dt.astimezone(ZoneInfo("America/Chicago"))
 
 def game_title(game: MLBGame) -> str:
     
