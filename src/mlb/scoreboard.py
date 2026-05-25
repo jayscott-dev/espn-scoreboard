@@ -1,13 +1,13 @@
 from dataclasses import dataclass
-from nba.game import NBAGame
+from mlb.game import MLBGame
 
 @dataclass
-class NBAScoreboard:
-    games: list[NBAGame]
+class MLBScoreboard:
+    games: list[MLBGame]
 
     @classmethod
-    def from_dict(cls, data: dict) -> "NBAScoreboard":
-        games = [NBAGame.from_dict(event) for event in data.get("events", [])]
+    def from_dict(cls, data: dict) -> "MLBScoreboard":
+        games = [MLBGame.from_dict(event) for event in data.get("events", [])]
         return cls(games = games)
     
     def print_games(self):
