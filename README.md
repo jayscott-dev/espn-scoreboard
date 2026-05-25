@@ -50,7 +50,7 @@ uv run src/espn-scoreboard.py
 uv run src/espn-scoreboard.py --write-data
 ```
 
-## Example Output
+## Example Output (NBA)
 
 ```
 1 Game Today
@@ -62,6 +62,15 @@ Current Score: Cavaliers(52-30) 30 - Pistons(60-22) 34
 Overall Points Leader: C. Cunningham, 15.0
 Overall Rebounds Leader: A. Thompson, 4.0
 Overall Assists Leader: A. Thompson, 4.0
+```
+## Example Output (MLB)
+
+```
+13 Games Today
+
+Colorado Rockies at Los Angeles Dodgers
+Time: 8:10 PM
+Score: Rockies 0 - Dodgers 0
 ```
 
 ## Architecture Overview

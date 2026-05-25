@@ -1,6 +1,7 @@
 import requests
 import json
 from nba.scoreboard import NBAScoreboard
+from mlb.scoreboard import MLBScoreboard
 
 SUPPORTED_LEAGUES = [
     "nba",
@@ -8,6 +9,7 @@ SUPPORTED_LEAGUES = [
 ]
 
 NBA_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
+MLB_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
 
 def fetch_nba_scoreboard(date: str | None = None) -> dict:
     params = {}
@@ -16,6 +18,19 @@ def fetch_nba_scoreboard(date: str | None = None) -> dict:
     resp = requests.get(
         NBA_URL,
         headers = {"User-Agent": "nba-scores-learning-script/1.0"},
+        params = params,
+        timeout = 10,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+def fetch_mlb_scoreboard(date: str | None = None) -> dict:
+    params = {}
+    if date:
+        params["dates"] = date
+    resp = requests.get(
+        MLB_URL,
+        headers = {"User-Agent": "mlb-scores-learning-script/1.0"},
         params = params,
         timeout = 10,
     )
@@ -32,6 +47,10 @@ def fetch_espn_data (league: str, write_data: bool, date: str | None = None):
         case "nba":
             data = fetch_nba_scoreboard(date)
             scoreboard = NBAScoreboard.from_dict(data)
+            scoreboard.print_games()
+        case "mlb":
+            data = fetch_mlb_scoreboard(date)
+            scoreboard = MLBScoreboard.from_dict(data)
             scoreboard.print_games()
         case _:
             print("Not yet implemented")
