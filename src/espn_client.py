@@ -8,6 +8,7 @@ SUPPORTED_LEAGUES = [
 ]
 
 NBA_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
+MLB_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
 
 def fetch_nba_scoreboard(date: str | None = None) -> dict:
     params = {}

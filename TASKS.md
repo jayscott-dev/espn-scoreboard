@@ -5,7 +5,12 @@ Planned features and improvements for the ESPN Scoreboard project.
 ## Backlog
 
 - [ ] Data structure for espn_client
+
+## MLB Backlog
+
 - [ ] Work on mlb scoreboard
+- [ ] Add current inning to game title
+- [ ] Current outs to game title
 
 ## Done
 
