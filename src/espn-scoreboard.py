@@ -33,7 +33,13 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
    args = parse_args()
-   ec.fetch_espn_data(args.league, args.write_data, args.date)
+   client_config = ec.ClientConfig (
+       league = args.league,
+       write_data = args.write_data,
+       date = args.date,
+   )
+
+   ec.fetch_espn_data(client_config)
 
    return 0
 

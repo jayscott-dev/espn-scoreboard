@@ -4,11 +4,10 @@ Planned features and improvements for the ESPN Scoreboard project.
 
 ## Backlog
 
-- [ ] Data structure for espn_client
+
 
 ## MLB Backlog
 
-- [ ] Work on mlb scoreboard
 - [ ] Add current inning to game title
 - [ ] Current outs to game title
 - [ ] Print date for -d instead of saying Games Today
@@ -26,3 +25,4 @@ Planned features and improvements for the ESPN Scoreboard project.
 - [x] Add series record: Game 7 (3-3)
 - [x] Reduce complexity around `StatLeader`
 - [x] Put convert_date in its own spot
+- [x] Data structure for espn_client
