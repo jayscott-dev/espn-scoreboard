@@ -4,13 +4,19 @@ Planned features and improvements for the ESPN Scoreboard project.
 
 ## Backlog
 
-
+- [ ] Writing data expects to be in src directory
 
 ## MLB Backlog
 
 - [ ] Add current inning to game title
 - [ ] Current outs to game title
 - [ ] Print date for -d instead of saying Games Today
+     - Compare dates from first and last events
+     - Dates are in UTC, convert to Central
+     - If dates are different, say "from {date} to {date}"
+     - If dates are the same, use single date
+     - If single date, check to see if it is today
+     - If today, print "Today"
 
 ## Done
 
