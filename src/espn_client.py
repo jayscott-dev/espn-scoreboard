@@ -1,5 +1,6 @@
 import requests
 import json
+from dataclasses import dataclass
 from nba.scoreboard import NBAScoreboard
 from mlb.scoreboard import MLBScoreboard
 
@@ -10,6 +11,12 @@ SUPPORTED_LEAGUES = [
 
 NBA_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 MLB_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
+
+@dataclass
+class ClientConfig:
+    league: str
+    write_data: bool
+    date: str | None = None
 
 def fetch_nba_scoreboard(date: str | None = None) -> dict:
     params = {}
@@ -41,19 +48,19 @@ def write_scoreboard_data(data: dict, league: str):
     with open(f"../data/{league}_scoreboard.json", "w") as file:
         json.dump(data, file, indent = 4)
 
-def fetch_espn_data (league: str, write_data: bool, date: str | None = None):
+def fetch_espn_data (client_config: ClientConfig):
     data = {}
-    match league:
+    match client_config.league:
         case "nba":
-            data = fetch_nba_scoreboard(date)
+            data = fetch_nba_scoreboard(client_config.date)
             scoreboard = NBAScoreboard.from_dict(data)
             scoreboard.print_games()
         case "mlb":
-            data = fetch_mlb_scoreboard(date)
+            data = fetch_mlb_scoreboard(client_config.date)
             scoreboard = MLBScoreboard.from_dict(data)
             scoreboard.print_games()
         case _:
             print("Not yet implemented")
 
-    if data and write_data:
-        write_scoreboard_data(data, league)
+    if data and client_config.write_data:
+        write_scoreboard_data(data, client_config.league)
