@@ -8,8 +8,7 @@ Planned features and improvements for the ESPN Scoreboard project.
 
 ## MLB Backlog
 
-- [ ] Add current inning to game title
-- [ ] Current outs to game title
+- [ ] Refine the RBI to have (4-4) at the end
 
 ## Done
 
@@ -32,3 +31,5 @@ Planned features and improvements for the ESPN Scoreboard project.
      - If dates are the same, use single date
      - If single date, check to see if it is today
      - If today, print "Today"
+- [x] Add current inning to game title
+- [x] Current outs to game title
