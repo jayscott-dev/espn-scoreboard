@@ -68,9 +68,13 @@ Overall Assists Leader: A. Thompson, 4.0
 ```
 13 Games Today
 
-Colorado Rockies at Los Angeles Dodgers
+Colorado Rockies at Los Angeles Dodgers (Final)
 Time: 8:10 PM
 Score: Rockies 0 - Dodgers 0
+Leaders:
+  Runs Batted In: Brandon Lowe, 1.0
+  Home Runs: Henry Davis, 1.0
+  Batting Average: Spencer Horwitz, 0.667
 ```
 
 ## Architecture Overview
