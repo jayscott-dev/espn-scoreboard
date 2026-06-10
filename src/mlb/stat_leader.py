@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, Self
+import re
 
 @dataclass
 class StatLeader:
@@ -36,5 +37,11 @@ class StatLeader:
 
     def formatted_display(self) -> str:
         if self.stat_type == "avg":
-            return f"{self.value:.3f}"
+            return f"{self.value:.3f} {self.parse_at_bats()}"
         return f"{self.value}"
+    
+    def parse_at_bats(self) -> str:
+        parts = self.display_value.split(", ")
+        if parts and re.search(r"-", parts[0]):
+            return f"({parts[0]})"
+        return ""

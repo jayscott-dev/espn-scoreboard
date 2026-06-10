@@ -8,7 +8,7 @@ Planned features and improvements for the ESPN Scoreboard project.
 
 ## MLB Backlog
 
-- [ ] Refine the RBI to have (4-4) at the end
+- [ ] Look into getting pitchers and there stats
 
 ## Done
 
@@ -33,3 +33,4 @@ Planned features and improvements for the ESPN Scoreboard project.
      - If today, print "Today"
 - [x] Add current inning to game title
 - [x] Current outs to game title
+- [x] Refine the avg to have (4-4) at the end
