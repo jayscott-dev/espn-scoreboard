@@ -1,0 +1,31 @@
+from dataclasses import dataclass
+from typing import Optional, Self
+
+@dataclass
+class StatLeader:
+    stat_type: str
+    athlete_name: str
+    value: int
+
+    @classmethod
+    def from_dict(cls, stat_leader: dict) -> Optional[Self]:
+        stat_type = stat_leader["name"] 
+        leaders = stat_leader["leaders"]
+        if leaders:
+            return cls(
+                stat_type = stat_type,
+                athlete_name = leaders[0]["athlete"]["shortName"],
+                value = leaders[0]["value"]
+            )
+        
+    @classmethod
+    def overall_stat_leader(cls, leaders: list[StatLeader]) -> Optional[StatLeader]:
+        overall_leader = None
+        for leader in leaders:
+            if overall_leader is None:
+                overall_leader = leader 
+            else:
+                if leader.value > overall_leader.value:
+                    overall_leader = leader
+        return overall_leader
+            

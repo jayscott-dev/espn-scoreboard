@@ -8,7 +8,10 @@ Planned features and improvements for the ESPN Scoreboard project.
 
 ## MLB Backlog
 
-- [ ] Look into getting pitchers and there stats
+
+## WNBA Backlog
+
+- [ ] Change overall leaders to match mlb
 
 ## Done
 

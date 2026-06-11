@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-#from nba.stat_leader import StatLeader
+from wnba.stat_leader import StatLeader
 from typing import Optional, Self
 
 @dataclass
@@ -9,7 +9,7 @@ class WNBATeam:
     display_name: str
     home: bool
     score: str
-    #leaders: list
+    leaders: list
     record: TeamRecord
 
     @classmethod
@@ -21,26 +21,26 @@ class WNBATeam:
             display_name = team.get("displayName", ""),
             home = ("home" == competitor.get("homeAway", "")),
             score = competitor.get("score", "0"),
-            #leaders = [leader for raw in competitor.get("leaders", []) if (leader := StatLeader.from_dict(raw)) is not None],
+            leaders = [leader for raw in competitor.get("leaders", []) if (leader := StatLeader.from_dict(raw)) is not None],
             record = TeamRecord.from_list(competitor.get("records", [])),
         )
     
     def build_score_display(self) -> str:
         return f"{self.name}({self.record.overall}) {self.score}"
     
-    #def points_leader(self) -> Optional[StatLeader]:
-    #    return self.find_stat_leader("points")
+    def points_leader(self) -> Optional[StatLeader]:
+        return self.find_stat_leader("points")
 
-    #def rebounds_leader(self) -> Optional[StatLeader]:
-    #    return self.find_stat_leader("rebounds")
+    def rebounds_leader(self) -> Optional[StatLeader]:
+        return self.find_stat_leader("rebounds")
 
-    #def assists_leader(self) -> Optional[StatLeader]:
-    #    return self.find_stat_leader("assists")
+    def assists_leader(self) -> Optional[StatLeader]:
+        return self.find_stat_leader("assists")
 
-    #def find_stat_leader(self, stat_type: str) -> Optional[StatLeader]:
-    #    for leader in self.leaders:
-    #        if leader.stat_type == stat_type:
-    #            return leader
+    def find_stat_leader(self, stat_type: str) -> Optional[StatLeader]:
+        for leader in self.leaders:
+            if leader.stat_type == stat_type:
+                return leader
 @dataclass
 class TeamRecord:
     overall: str
