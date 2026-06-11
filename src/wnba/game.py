@@ -1,17 +1,17 @@
 from dataclasses import dataclass
 import utils.date as date_utils
 from typing import Optional, Self
-#from nba.team import NBATeam
+from wnba.team import WNBATeam
 #from nba.stat_leader import StatLeader
 
 @dataclass
 class WNBAGame:
     name: str
     date: str
-    #teams: dict
+    teams: dict
     #completed: bool
     #series_data: str
-    #metadata: GameMetadata
+    metadata: GameMetadata
     #series_records: dict[str, SeriesRecord]
 
     @classmethod
@@ -19,9 +19,9 @@ class WNBAGame:
         competitions = game.get("competitions", [])[0]
         completed = competitions.get("status", {}).get("type", {}).get("completed", False)
 
-        #teams = {}
-        #for team in competitions.get("competitors", []):
-        #    teams[team["homeAway"]] = NBATeam.from_dict(team)
+        teams = {}
+        for team in competitions.get("competitors", []):
+            teams[team["homeAway"]] = WNBATeam.from_dict(team)
 
         #notes = competitions.get("notes", [])
         #if notes:
@@ -37,18 +37,18 @@ class WNBAGame:
         return cls(
             name = game.get("name", ""),
             date = game.get("date", ""),
-            #teams = teams,
+            teams = teams,
             #completed = completed,
             #series_data = series_data, 
-            #metadata = GameMetadata.from_dict(competitions["status"]),
+            metadata = GameMetadata.from_dict(competitions["status"]),
             #series_records = series_records
         )
 
-    #def home_team(self) -> NBATeam:
-    #    return self.teams["home"]
+    def home_team(self) -> WNBATeam:
+        return self.teams["home"]
     
-    #def away_team(self) -> NBATeam:
-    #    return self.teams["away"]
+    def away_team(self) -> WNBATeam:
+        return self.teams["away"]
     
     #def build_series_record(self) -> str:
     #    return f"({self.series_records[self.away_team().id].wins} - {self.series_records[self.home_team().id].wins})"
@@ -57,8 +57,8 @@ class WNBAGame:
         print(f"\n{game_title(self)}")
     #    if self.series_data:
     #      print(f"{self.series_data} {self.build_series_record() if self.series_records else ""}")
-    #    print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
-    #    print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
+        print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
+        print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
     #    points_leader = self.find_overall_points_leader()
     #    if points_leader is not None:
@@ -90,25 +90,24 @@ class WNBAGame:
     #        leaders.append(team.assists_leader())
     #    return StatLeader.overall_stat_leader(leaders)
     
-#@dataclass
-#class GameMetadata:
-#    status: str
-#    detail: str
+@dataclass
+class GameMetadata:
+    status: str
+    detail: str
 
-#    @classmethod
-#    def from_dict(cls, metadata: dict) -> "GameMetadata":
-#        status_type = metadata["type"]
+    @classmethod
+    def from_dict(cls, metadata: dict) -> Self:
+        status_type = metadata["type"]
         
-#        return cls (
-#            status = status_type["description"],
-#            detail = status_type["detail"],
-#        )
+        return cls (
+            status = status_type["description"],
+            detail = status_type["detail"],
+        )
     
 def game_title(game: WNBAGame) -> str:
-#    game_status = game.metadata.detail if game.metadata.status == "In Progress" else game.metadata.status
-#
-#    return f"{game.name} ({game_status})"
-    return f"{game.name}"
+    game_status = game.metadata.detail if game.metadata.status == "In Progress" else game.metadata.status
+
+    return f"{game.name} ({game_status})"
 
 #@dataclass
 #class SeriesRecord:
