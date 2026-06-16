@@ -11,7 +11,6 @@ Planned features and improvements for the ESPN Scoreboard project.
 
 ## WNBA Backlog
 
-- [ ] Change overall leaders to match mlb
 
 ## Done
 
@@ -37,3 +36,4 @@ Planned features and improvements for the ESPN Scoreboard project.
 - [x] Add current inning to game title
 - [x] Current outs to game title
 - [x] Refine the avg to have (4-4) at the end
+- [x] Change overall leaders to match mlb

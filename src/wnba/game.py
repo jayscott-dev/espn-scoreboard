@@ -60,17 +60,21 @@ class WNBAGame:
         print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
         print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
-        points_leader = self.find_overall_points_leader()
-        if points_leader is not None:
-            print(f"Overall Points Leader: {points_leader.athlete_name}, {points_leader.value}")
-
-        rebounds_leader = self.find_overall_rebounds_leader()
-        if rebounds_leader is not None:
-            print(f"Overall Rebounds Leader: {rebounds_leader.athlete_name}, {rebounds_leader.value}")
+        stat_leaders = []
+        if (points_leader := self.find_overall_points_leader()) is not None:
+            stat_leaders.append(points_leader)
             
-        assists_leader = self.find_overall_assists_leader()
-        if assists_leader is not None:
-            print(f"Overall Assists Leader: {assists_leader.athlete_name}, {assists_leader.value}")
+        if (rebounds_leader := self.find_overall_rebounds_leader()) is not None:
+            stat_leaders.append(rebounds_leader)
+        
+        if (assists_leader := self.find_overall_assists_leader()) is not None:
+            stat_leaders.append(assists_leader)
+        
+        if stat_leaders:
+            print("Leaders:")
+        
+        for stat_leader in stat_leaders:
+            print(f"  {stat_leader.display_name}: {stat_leader.athlete_name}, {stat_leader.value}")
 
     def find_overall_points_leader(self) -> Optional[StatLeader]:
         leaders = []

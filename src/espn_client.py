@@ -4,16 +4,19 @@ from dataclasses import dataclass
 from nba.scoreboard import NBAScoreboard
 from mlb.scoreboard import MLBScoreboard
 from wnba.scoreboard import WNBAScoreboard
+from fifa.scoreboard import FIFAScoreboard
 
 SUPPORTED_LEAGUES = [
     "nba",
     "mlb",
     "wnba",
+    "fifa",
 ]
 
 NBA_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 MLB_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
 WNBA_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard"
+FIFA_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
 
 @dataclass
 class ClientConfig:
@@ -60,6 +63,19 @@ def fetch_wnba_scoreboard(date: str | None = None) -> dict:
     resp.raise_for_status()
     return resp.json()
 
+def fetch_fifa_scoreboard(date: str | None = None) -> dict:
+    params = {}
+    if date:
+        params["date"] = date
+    resp = requests.get(
+        FIFA_URL,
+        headers = {"User-Agent": "fifa-scores-learning-script/1.0"},
+        params = params,
+        timeout = 10,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
 def write_scoreboard_data(data: dict, league: str):
     with open(f"../data/{league}_scoreboard.json", "w") as file:
         json.dump(data, file, indent = 4)
@@ -78,6 +94,10 @@ def fetch_espn_data (client_config: ClientConfig):
         case"wnba":
             data = fetch_wnba_scoreboard(client_config.date)
             scoreboard = WNBAScoreboard.from_dict(data)
+            scoreboard.print_games()
+        case"fifa":
+            data = fetch_fifa_scoreboard(client_config.date)
+            scoreboard = FIFAScoreboard.from_dict(data)
             scoreboard.print_games()
         case _:
             print("Not yet implemented")

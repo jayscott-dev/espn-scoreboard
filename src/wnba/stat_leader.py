@@ -6,16 +6,19 @@ class StatLeader:
     stat_type: str
     athlete_name: str
     value: int
+    display_name: str
 
     @classmethod
     def from_dict(cls, stat_leader: dict) -> Optional[Self]:
         stat_type = stat_leader["name"] 
         leaders = stat_leader["leaders"]
+        display_name = stat_leader["displayName"]
         if leaders:
             return cls(
                 stat_type = stat_type,
-                athlete_name = leaders[0]["athlete"]["shortName"],
-                value = leaders[0]["value"]
+                athlete_name = leaders[0]["athlete"]["displayName"],
+                value = leaders[0]["value"],
+                display_name = display_name.split(" ")[0]
             )
         
     @classmethod
