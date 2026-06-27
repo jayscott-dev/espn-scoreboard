@@ -1,0 +1,1 @@
+PYTHONPATH=.:src uv run fastapi dev api/main.py
