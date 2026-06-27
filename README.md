@@ -163,6 +163,14 @@ The ESPN API follows a consistent URL pattern:
 https://site.api.espn.com/apis/site/v2/sports/{sport}/{league}/scoreboard
 ```
 
+## Implementation Plans
+
+Detailed plans for larger features — including decisions, reasoning, API contracts, and task breakdowns.
+
+| Plan | Description | Status |
+|------|-------------|--------|
+| [Backend API & Web UI](plans/backend-api-and-ui.md) | Add FastAPI backend + React/Vite frontend with Docker Compose, while preserving the CLI | Planning complete |
+
 ## Roadmap
 
 See [TASKS.md](TASKS.md) for planned features and improvements.
