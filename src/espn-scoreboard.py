@@ -39,7 +39,7 @@ def main() -> int:
        date = args.date,
    )
 
-   ec.fetch_espn_data(client_config)
+   ec.print_espn_data(client_config)
 
    return 0
 

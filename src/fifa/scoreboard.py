@@ -17,10 +17,11 @@ class FIFAScoreboard:
         if num_games == 0:
             print("0 Games Found")
         else:
-            print(f"{num_games} Game{'s' if num_games != 1 else ''} {self.date_display()}")
+            print(f"{num_games} Game{'s' if num_games != 1 else ''} {self.date_display}")
         for game in self.games:
             game.print_game_data() 
-    
+
+    @property 
     def date_display(self) -> str:
         if len(self.games) > 0:
             d1 = self.games[0].date
