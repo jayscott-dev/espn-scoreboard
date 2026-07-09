@@ -1,6 +1,9 @@
 import src.espn_client as ec
+import serializers as srl
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
+from models import ScoreboardResponse
+from protocols import Scoreboard
 
 app = FastAPI()
 
@@ -11,3 +14,14 @@ def get_leagues():
 @app.get("/config")
 def get_config():
     return {"poll_interval_ms": 120000}
+
+@app.get("/scoreboard")
+def get_scoreboard(
+    league: str = Query(..., description = "League to fetch", examples = ["nba"]),
+    date: str | None = Query(None, description = "Date in YYYYMMDD format"),
+) -> ScoreboardResponse:
+    scoreboard = ec.fetch_espn_data(league, date)
+    if scoreboard:
+        return srl.scoreboard_response_from(scoreboard)
+    else:
+        return ScoreboardResponse(league = "n/a", date_display = "n/a")

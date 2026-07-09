@@ -76,31 +76,28 @@ def fetch_fifa_scoreboard(date: str | None = None) -> dict:
     resp.raise_for_status()
     return resp.json()
 
-def write_scoreboard_data(data: dict, league: str):
+def write_scoreboard_data(data, league: str):
     with open(f"../data/{league}_scoreboard.json", "w") as file:
         json.dump(data, file, indent = 4)
 
-def fetch_espn_data (client_config: ClientConfig):
-    data = {}
-    match client_config.league:
+def fetch_espn_data(league: str, date: str | None = None):
+    match league:
         case "nba":
-            data = fetch_nba_scoreboard(client_config.date)
-            scoreboard = NBAScoreboard.from_dict(data)
-            scoreboard.print_games()
+            return NBAScoreboard.from_dict(fetch_nba_scoreboard(date))
         case "mlb":
-            data = fetch_mlb_scoreboard(client_config.date)
-            scoreboard = MLBScoreboard.from_dict(data)
-            scoreboard.print_games()
-        case"wnba":
-            data = fetch_wnba_scoreboard(client_config.date)
-            scoreboard = WNBAScoreboard.from_dict(data)
-            scoreboard.print_games()
-        case"fifa":
-            data = fetch_fifa_scoreboard(client_config.date)
-            scoreboard = FIFAScoreboard.from_dict(data)
-            scoreboard.print_games()
-        case _:
-            print("Not yet implemented")
+            return MLBScoreboard.from_dict(fetch_mlb_scoreboard(date))
+        case "wnba":
+            return WNBAScoreboard.from_dict(fetch_wnba_scoreboard(date))
+        case "fifa":
+            return FIFAScoreboard.from_dict(fetch_fifa_scoreboard(date))
+
+def print_espn_data (client_config: ClientConfig):
+    data = fetch_espn_data(client_config.league, client_config.date)
+
+    if not data:
+        print("Not yet implemented")
+    else:
+        data.print_games()
 
     if data and client_config.write_data:
         write_scoreboard_data(data, client_config.league)

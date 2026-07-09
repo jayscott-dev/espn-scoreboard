@@ -5,6 +5,7 @@ import utils.date as date_utils
 @dataclass
 class NBAScoreboard:
     games: list[NBAGame]
+    league: str = "NBA"
 
     @classmethod
     def from_dict(cls, data: dict) -> "NBAScoreboard":
@@ -16,8 +17,15 @@ class NBAScoreboard:
         if num_games == 0:
             print("0 Games Found")
         else:
-            d1 = self.games[0].date
-            d2 = self.games[-1].date
-            print(f"{num_games} Game{'s' if num_games != 1 else ''} {date_utils.display_games_dt(d1, d2)}")
+            print(f"{num_games} Game{'s' if num_games != 1 else ''} {self.date_display}")
         for game in self.games:
             game.print_game_data() 
+
+    @property
+    def date_display(self) -> str:
+        if len(self.games) > 0:
+            d1 = self.games[0].date
+            d2 = self.games[-1].date
+            return date_utils.display_games_dt(d1, d2)
+        else:
+            return ""
