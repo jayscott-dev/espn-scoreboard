@@ -1,4 +1,4 @@
-from protocols import Scoreboard
+from base import Scoreboard
 from models import ScoreboardResponse
 
 def scoreboard_response_from(scoreboard: Scoreboard) -> ScoreboardResponse:

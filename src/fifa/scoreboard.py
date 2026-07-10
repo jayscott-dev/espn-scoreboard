@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from fifa.game import FIFAGame
 import utils.date as date_utils
+from base import Scoreboard
 
 @dataclass
-class FIFAScoreboard:
+class FIFAScoreboard(Scoreboard):
     games: list[FIFAGame]
-    league: str = "FIFA"
 
     @classmethod
     def from_dict(cls, data: dict) -> "FIFAScoreboard":
@@ -20,6 +20,10 @@ class FIFAScoreboard:
             print(f"{num_games} Game{'s' if num_games != 1 else ''} {self.date_display}")
         for game in self.games:
             game.print_game_data() 
+
+    @property
+    def league(self) -> str:
+        return "FIFA"
 
     @property 
     def date_display(self) -> str:

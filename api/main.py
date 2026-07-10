@@ -3,7 +3,6 @@ import serializers as srl
 
 from fastapi import FastAPI, Query
 from models import ScoreboardResponse
-from protocols import Scoreboard
 
 app = FastAPI()
 

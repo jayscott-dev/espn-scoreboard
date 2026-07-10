@@ -1,7 +1,6 @@
-from typing import Protocol, runtime_checkable
+from abc import ABC, abstractmethod
 
-@runtime_checkable
-class Scoreboard(Protocol):
+class Scoreboard(ABC):
     @property
     def date_display(self) -> str:
         ...

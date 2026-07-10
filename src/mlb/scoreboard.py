@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from mlb.game import MLBGame
 import utils.date as date_utils
+from base import Scoreboard
 
 @dataclass
-class MLBScoreboard:
+class MLBScoreboard(Scoreboard):
     games: list[MLBGame]
-    league: str = "MLB"
 
     @classmethod
     def from_dict(cls, data: dict) -> "MLBScoreboard":
@@ -20,6 +20,10 @@ class MLBScoreboard:
             print(f"{num_games} Game{'s' if num_games != 1 else ''} {self.date_display}")
         for game in self.games:
             game.print_game_data() 
+
+    @property
+    def league(self) -> str:
+        return "MLB"
 
     @property
     def date_display(self) -> str:
