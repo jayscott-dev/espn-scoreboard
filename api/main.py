@@ -1,7 +1,8 @@
 import src.espn_client as ec
 import serializers as srl
+from exceptions import NotYetImplementedError, UnsupportedLeagueError
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 from models import ScoreboardResponse
 
 app = FastAPI()
@@ -19,8 +20,10 @@ def get_scoreboard(
     league: str = Query(..., description = "League to fetch", examples = ["nba"]),
     date: str | None = Query(None, description = "Date in YYYYMMDD format"),
 ) -> ScoreboardResponse:
-    scoreboard = ec.fetch_espn_data(league, date)
-    if scoreboard:
+    try:
+        scoreboard = ec.fetch_espn_data(league, date)
         return srl.scoreboard_response_from(scoreboard)
-    else:
-        return ScoreboardResponse(league = "n/a", date_display = "n/a")
+    except NotYetImplementedError as exc:
+        raise HTTPException(status_code = 400, detail = str(exc))
+    except UnsupportedLeagueError as exc:
+        raise HTTPException(status_code = 400, detail = str(exc))
