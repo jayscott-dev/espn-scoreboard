@@ -5,12 +5,14 @@ from nba.scoreboard import NBAScoreboard
 from mlb.scoreboard import MLBScoreboard
 from wnba.scoreboard import WNBAScoreboard
 from fifa.scoreboard import FIFAScoreboard
+from exceptions import NotYetImplementedError, UnsupportedLeagueError
 
 SUPPORTED_LEAGUES = [
     "nba",
     "mlb",
     "wnba",
     "fifa",
+    "tennis",
 ]
 
 NBA_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
@@ -90,14 +92,19 @@ def fetch_espn_data(league: str, date: str | None = None):
             return WNBAScoreboard.from_dict(fetch_wnba_scoreboard(date))
         case "fifa":
             return FIFAScoreboard.from_dict(fetch_fifa_scoreboard(date))
+        case _:
+            if league in SUPPORTED_LEAGUES:
+                raise NotYetImplementedError(f"Scoreboard for league {league} is not yet implemented")
+            else:
+                raise UnsupportedLeagueError(f"League {league} is not supported")
 
 def print_espn_data (client_config: ClientConfig):
-    data = fetch_espn_data(client_config.league, client_config.date)
-
-    if not data:
-        print("Not yet implemented")
-    else:
+    try:
+        data = fetch_espn_data(client_config.league, client_config.date)
         data.print_games()
-
-    if data and client_config.write_data:
-        write_scoreboard_data(data, client_config.league)
+        if client_config.write_data:
+            write_scoreboard_data(data, client_config.league)
+    except NotYetImplementedError:
+        print("Not yet implemented")
+    except UnsupportedLeagueError:
+        print("League not supported")
