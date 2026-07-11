@@ -3,9 +3,10 @@ import utils.date as date_utils
 from typing import Optional, Self
 from mlb.team import MLBTeam
 from mlb.stat_leader import StatLeader
+from base import Game
 
 @dataclass
-class MLBGame:
+class MLBGame(Game):
     name: str
     date: str
     teams: dict[str, MLBTeam]
@@ -26,6 +27,10 @@ class MLBGame:
            game_metadata = GameMetadata.from_dict(competitions)
        ) 
     
+    @property
+    def title(self) -> str:
+        return self.name
+
     def home_team(self) -> MLBTeam:
         return self.teams["home"]
     

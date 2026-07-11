@@ -3,9 +3,10 @@ import utils.date as date_utils
 from typing import Optional, Self
 from wnba.team import WNBATeam
 from wnba.stat_leader import StatLeader
+from base import Game
 
 @dataclass
-class WNBAGame:
+class WNBAGame(Game):
     name: str
     date: str
     teams: dict
@@ -43,6 +44,10 @@ class WNBAGame:
             metadata = GameMetadata.from_dict(competitions["status"]),
             series_records = series_records
         )
+
+    @property
+    def title(self) -> str:
+        return self.name
 
     def home_team(self) -> WNBATeam:
         return self.teams["home"]

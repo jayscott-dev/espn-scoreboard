@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 import utils.date as date_utils
 from typing import Self
+from base import Game
 
 @dataclass
-class FIFAGame:
+class FIFAGame(Game):
     name: str
     date: str
     description: str
@@ -42,6 +43,10 @@ class FIFAGame:
             display_clock = game["status"]["displayClock"]
        ) 
     
+    @property
+    def title(self) -> str:
+        return self.name
+
     def print_game_data(self):
         print(f"\n{game_title(self)}")
         print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
