@@ -10,5 +10,10 @@ def scoreboard_response_from(scoreboard: Scoreboard) -> ScoreboardResponse:
 
 def game_response_from(game: Game) -> GameResponse:
     return GameResponse (
-        title = game.title
+        title = game.title,
+        start_date = game.start_date,
+        start_time = game.start_time,
+        status = game.status,
+        status_detail = game.status_detail,
+        series_info = game.series_info,
     )

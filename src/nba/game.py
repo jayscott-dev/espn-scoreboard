@@ -49,6 +49,28 @@ class NBAGame(Game):
     def title(self) -> str:
         return self.name
 
+    @property
+    def start_date(self) -> str:
+        return self.date
+    
+    @property
+    def start_time(self) -> str:
+        return date_utils.convert_dt(self.date).strftime("%I:%M %p")
+    
+    @property
+    def status(self) -> str:
+        return self.metadata.status
+    
+    @property
+    def status_detail(self) -> str:
+        return self.metadata.detail
+    
+    @property
+    def series_info(self) -> str | None:
+        if self.series_data:
+          return f"{self.series_data} {self.build_series_record() if self.series_records else ""}"
+        
+
     def home_team(self) -> NBATeam:
         return self.teams["home"]
     
@@ -60,9 +82,9 @@ class NBAGame(Game):
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")
-        if self.series_data:
-          print(f"{self.series_data} {self.build_series_record() if self.series_records else ""}")
-        print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
+        if self.series_info:
+            print(f"{self.series_info}")
+        print(f"Time: {self.start_time}")
         print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
         stat_leaders = []

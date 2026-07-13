@@ -46,10 +46,26 @@ class FIFAGame(Game):
     @property
     def title(self) -> str:
         return self.name
+    
+    @property
+    def start_time(self) -> str:
+        return date_utils.convert_dt(self.date).strftime("%I:%M %p")
+    
+    @property
+    def start_date(self) -> str:
+        return self.date
+    
+    @property
+    def status_detail(self) -> str:
+        return self.display_clock
+    
+    @property
+    def status(self) -> str:
+        return self.description
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")
-        print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
+        print(f"Time: {self.start_time}")
         print(f"Score: {self.away_team} {self.away_score} - {self.home_team} {self.home_score} ({self.display_clock})")
 
 def game_title(game: FIFAGame) -> str:

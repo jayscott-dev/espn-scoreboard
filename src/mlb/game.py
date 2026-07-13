@@ -30,7 +30,23 @@ class MLBGame(Game):
     @property
     def title(self) -> str:
         return self.name
-
+    
+    @property
+    def start_date(self) -> str:
+        return self.date
+    
+    @property
+    def start_time(self) -> str:
+        return date_utils.convert_dt(self.date).strftime("%I:%M %p")
+    
+    @property
+    def status(self) -> str:
+        return self.game_metadata.status
+    
+    @property
+    def status_detail(self) -> str:
+        return self.game_metadata.detail
+    
     def home_team(self) -> MLBTeam:
         return self.teams["home"]
     
@@ -39,7 +55,7 @@ class MLBGame(Game):
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")
-        print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
+        print(f"Time: {self.start_time}")
         print(f"Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
         stat_leaders = []
