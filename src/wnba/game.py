@@ -3,7 +3,7 @@ import utils.date as date_utils
 from typing import Optional, Self
 from wnba.team import WNBATeam
 from wnba.stat_leader import StatLeader
-from base import Game
+from base import Game, Team
 
 @dataclass
 class WNBAGame(Game):
@@ -69,16 +69,17 @@ class WNBAGame(Game):
     def series_info(self) -> str | None:
         if self.series_data:
           return f"{self.series_data} {self.build_series_record() if self.series_records else ""}"
-        
 
-    def home_team(self) -> WNBATeam:
+    @property
+    def home_team(self) -> Team:
         return self.teams["home"]
     
-    def away_team(self) -> WNBATeam:
+    @property
+    def away_team(self) -> Team:
         return self.teams["away"]
     
     def build_series_record(self) -> str:
-        return f"({self.series_records[self.away_team().id].wins} - {self.series_records[self.home_team().id].wins})"
+        return f"({self.series_records[self.away_team.id].wins} - {self.series_records[self.home_team.id].wins})"
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")

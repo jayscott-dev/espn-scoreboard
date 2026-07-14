@@ -45,3 +45,33 @@ class Game(ABC):
     @property
     def series_info(self) -> str | None:
         return None
+    
+    @property
+    @abstractmethod
+    def home_team(self) -> Team:
+        ...
+
+    @property
+    @abstractmethod
+    def away_team(self) -> Team:
+        ...
+
+class Team(ABC):
+    @property
+    @abstractmethod
+    def id(self) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        ...
+    
+    @property
+    @abstractmethod
+    def score(self) -> str:
+        ...
+    
+    @property
+    def record(self) -> str | None:
+        return None
