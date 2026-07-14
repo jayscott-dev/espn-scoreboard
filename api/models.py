@@ -7,3 +7,8 @@ class ScoreboardResponse(BaseModel):
 
 class GameResponse(BaseModel):
     title: str
+    start_date: str
+    start_time: str
+    status: str
+    status_detail: str
+    series_info: str | None

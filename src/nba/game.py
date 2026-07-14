@@ -3,7 +3,7 @@ import utils.date as date_utils
 from typing import Optional
 from nba.team import NBATeam
 from nba.stat_leader import StatLeader
-from base import Game
+from base import Game, Team
 
 @dataclass
 class NBAGame(Game):
@@ -49,20 +49,43 @@ class NBAGame(Game):
     def title(self) -> str:
         return self.name
 
-    def home_team(self) -> NBATeam:
+    @property
+    def start_date(self) -> str:
+        return self.date
+    
+    @property
+    def start_time(self) -> str:
+        return date_utils.convert_dt(self.date).strftime("%I:%M %p")
+    
+    @property
+    def status(self) -> str:
+        return self.metadata.status
+    
+    @property
+    def status_detail(self) -> str:
+        return self.metadata.detail
+    
+    @property
+    def series_info(self) -> str | None:
+        if self.series_data:
+          return f"{self.series_data} {self.build_series_record() if self.series_records else ""}"
+        
+    @property
+    def home_team(self) -> Team:
         return self.teams["home"]
     
-    def away_team(self) -> NBATeam:
+    @property
+    def away_team(self) -> Team:
         return self.teams["away"]
     
     def build_series_record(self) -> str:
-        return f"({self.series_records[self.away_team().id].wins} - {self.series_records[self.home_team().id].wins})"
+        return f"({self.series_records[self.away_team.id].wins} - {self.series_records[self.home_team.id].wins})"
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")
-        if self.series_data:
-          print(f"{self.series_data} {self.build_series_record() if self.series_records else ""}")
-        print(f"Time: {date_utils.convert_dt(self.date).strftime("%I:%M %p")}")
+        if self.series_info:
+            print(f"{self.series_info}")
+        print(f"Time: {self.start_time}")
         print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
 
         stat_leaders = []

@@ -1,32 +1,49 @@
 from dataclasses import dataclass
 from wnba.stat_leader import StatLeader
 from typing import Optional, Self
+from base import Team
 
 @dataclass
-class WNBATeam:
-    id: str
-    name: str
+class WNBATeam(Team):
+    _id: str
+    _name: str
     display_name: str
     home: bool
-    score: str
+    _score: str
     leaders: list
-    record: TeamRecord
+    _record: TeamRecord
 
     @classmethod
     def from_dict(cls, competitor: dict) -> Self:
         team = competitor.get("team", {})
         return cls(
-            id = team.get("id", ""),
-            name = team.get("name", ""),
+            _id = team.get("id", ""),
+            _name = team.get("name", ""),
             display_name = team.get("displayName", ""),
             home = ("home" == competitor.get("homeAway", "")),
-            score = competitor.get("score", "0"),
+            _score = competitor.get("score", "0"),
             leaders = [leader for raw in competitor.get("leaders", []) if (leader := StatLeader.from_dict(raw)) is not None],
-            record = TeamRecord.from_list(competitor.get("records", [])),
+            _record = TeamRecord.from_list(competitor.get("records", [])),
         )
     
+    @property
+    def id(self) -> str:
+        return self._id
+    
+    @property
+    def name(self) -> str:
+        return self._name
+    
+    @property
+    def score(self) -> str:
+        return self._score
+    
+    @property
+    def record(self) -> str:
+        return self._record.overall
+
     def build_score_display(self) -> str:
-        return f"{self.name}({self.record.overall}) {self.score}"
+        return f"{self.name}({self.record}) {self.score}"
     
     def points_leader(self) -> Optional[StatLeader]:
         return self.find_stat_leader("points")
