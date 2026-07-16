@@ -12,3 +12,11 @@ class GameResponse(BaseModel):
     status: str
     status_detail: str
     series_info: str | None
+    home_team: TeamResponse
+    away_team: TeamResponse
+
+class TeamResponse(BaseModel):
+    id: str
+    name: str
+    score: str
+    record: str | None
