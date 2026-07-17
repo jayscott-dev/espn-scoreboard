@@ -3,17 +3,17 @@ import serializers as srl
 from exceptions import NotYetImplementedError, UnsupportedLeagueError
 
 from fastapi import FastAPI, Query, HTTPException
-from models import ScoreboardResponse
+from models import ScoreboardResponse, LeagueResponse, ConfigResponse
 
 app = FastAPI()
 
 @app.get("/leagues")
-def get_leagues():
-    return {"leagues": ec.SUPPORTED_LEAGUES}
+def get_leagues() -> LeagueResponse:
+    return LeagueResponse (leagues = ec.SUPPORTED_LEAGUES)
 
 @app.get("/config")
-def get_config():
-    return {"poll_interval_ms": 120000}
+def get_config() -> ConfigResponse:
+    return ConfigResponse (poll_interval_ms = 120000)
 
 @app.get("/scoreboard")
 def get_scoreboard(

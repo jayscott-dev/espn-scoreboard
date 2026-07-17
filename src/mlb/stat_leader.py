@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional, Self
 import re
+import base
 
 @dataclass
-class StatLeader:
+class StatLeader(base.StatLeader):
+    _team_id: str
     stat_type: str # name
     display_name: str
     value: float
@@ -17,6 +19,7 @@ class StatLeader:
         display_name = stat_leader["displayName"]
         if leaders:
             return cls (
+                _team_id = leaders[0]["team"]["id"],
                 stat_type = stat_type,
                 display_name = display_name,
                 value = leaders[0]["value"],
@@ -45,3 +48,19 @@ class StatLeader:
         if parts and re.search(r"-", parts[0]):
             return f"({parts[0]})"
         return ""
+
+    @property
+    def team_id(self) -> str:
+        return self._team_id
+
+    @property
+    def label(self) -> str:
+        return self.display_name
+
+    @property
+    def name(self) -> str:
+        return self.athlete_name
+
+    @property
+    def stat_value(self) -> str:
+        return self.formatted_display()

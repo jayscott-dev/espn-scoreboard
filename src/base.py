@@ -42,6 +42,7 @@ class Game(ABC):
     @abstractmethod
     def status_detail(self) -> str:
         ...
+
     @property
     def series_info(self) -> str | None:
         return None
@@ -55,6 +56,10 @@ class Game(ABC):
     @abstractmethod
     def away_team(self) -> Team:
         ...
+
+    @property
+    def stat_leaders(self) -> list[StatLeader] | None:
+        return None
 
 class Team(ABC):
     @property
@@ -75,3 +80,25 @@ class Team(ABC):
     @property
     def record(self) -> str | None:
         return None
+
+class StatLeader(ABC):
+    @property
+    @abstractmethod
+    def team_id(self) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def label(self) -> str:
+        ...
+    
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def stat_value(self) -> str:
+        ...
+    
