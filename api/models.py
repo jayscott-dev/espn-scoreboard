@@ -27,3 +27,9 @@ class StatLeaderResponse(BaseModel):
     label: str
     name: str
     stat_value: str
+
+class LeagueResponse(BaseModel):
+    leagues: list[str]
+
+class ConfigResponse(BaseModel):
+    poll_interval_ms: int
