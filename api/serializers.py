@@ -1,5 +1,5 @@
-from base import Scoreboard, Game, Team
-from models import ScoreboardResponse, GameResponse, TeamResponse
+from base import Scoreboard, Game, Team, StatLeader
+from models import ScoreboardResponse, GameResponse, TeamResponse, StatLeaderResponse
 
 def scoreboard_response_from(scoreboard: Scoreboard) -> ScoreboardResponse:
     return ScoreboardResponse (
@@ -18,6 +18,7 @@ def game_response_from(game: Game) -> GameResponse:
         series_info = game.series_info,
         home_team = team_response_from(game.home_team),
         away_team = team_response_from(game.away_team),
+        stat_leaders = [stat_leader_response_from(leader) for leader in (game.stat_leaders or [])]
     )
 
 def team_response_from(team: Team) -> TeamResponse:
@@ -27,3 +28,12 @@ def team_response_from(team: Team) -> TeamResponse:
         score = team.score,
         record = team.record,
     )
+
+def stat_leader_response_from(leader: StatLeader) -> StatLeaderResponse:
+    return StatLeaderResponse (
+        team_id = leader.team_id,
+        label = leader.label,
+        name = leader.name,
+        stat_value = leader.stat_value,
+    )
+

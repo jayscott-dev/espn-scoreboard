@@ -4,6 +4,7 @@ from typing import Optional, Self
 from mlb.team import MLBTeam
 from mlb.stat_leader import StatLeader
 from base import Game, Team
+import base
 
 @dataclass
 class MLBGame(Game):
@@ -54,6 +55,18 @@ class MLBGame(Game):
     @property
     def away_team(self) -> Team:
         return self.teams["away"]
+    
+    @property
+    def stat_leaders(self) -> list[base.StatLeader]:
+        leaders = []
+
+        for leader in self.teams["home"].leaders:
+            leaders.append(leader)
+
+        for leader in self.teams["away"].leaders:
+            leaders.append(leader)
+
+        return leaders
 
     def print_game_data(self):
         print(f"\n{game_title(self)}")

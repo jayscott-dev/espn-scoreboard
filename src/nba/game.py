@@ -4,6 +4,7 @@ from typing import Optional
 from nba.team import NBATeam
 from nba.stat_leader import StatLeader
 from base import Game, Team
+import base
 
 @dataclass
 class NBAGame(Game):
@@ -77,6 +78,18 @@ class NBAGame(Game):
     @property
     def away_team(self) -> Team:
         return self.teams["away"]
+    
+    @property
+    def stat_leaders(self) -> list[base.StatLeader]:
+        leaders = []
+
+        for leader in self.teams["home"].leaders:
+            leaders.append(leader)
+
+        for leader in self.teams["away"].leaders:
+            leaders.append(leader)
+
+        return leaders
     
     def build_series_record(self) -> str:
         return f"({self.series_records[self.away_team.id].wins} - {self.series_records[self.home_team.id].wins})"

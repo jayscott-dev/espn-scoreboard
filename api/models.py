@@ -14,9 +14,16 @@ class GameResponse(BaseModel):
     series_info: str | None
     home_team: TeamResponse
     away_team: TeamResponse
+    stat_leaders: list[StatLeaderResponse]
 
 class TeamResponse(BaseModel):
     id: str
     name: str
     score: str
     record: str | None
+
+class StatLeaderResponse(BaseModel):
+    team_id: str
+    label: str
+    name: str
+    stat_value: str
