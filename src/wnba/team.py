@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from wnba.stat_leader import StatLeader
 from typing import Optional, Self
