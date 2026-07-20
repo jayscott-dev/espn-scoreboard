@@ -1,11 +1,24 @@
+import os 
 import src.espn_client as ec
 import serializers as srl
 from exceptions import NotYetImplementedError, UnsupportedLeagueError
 
 from fastapi import FastAPI, Query, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from models import ScoreboardResponse, LeagueResponse, ConfigResponse
 
 app = FastAPI()
+allowed_origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = allowed_origins,
+    allow_credentials = True,
+    allow_methods = ["GET"],
+    allow_headers = ["*"],
+)
 
 @app.get("/leagues")
 def get_leagues() -> LeagueResponse:
@@ -13,7 +26,7 @@ def get_leagues() -> LeagueResponse:
 
 @app.get("/config")
 def get_config() -> ConfigResponse:
-    return ConfigResponse (poll_interval_ms = 120000)
+    return ConfigResponse (poll_interval_ms = int(os.getenv("POLL_INTERVAL_MS", "120000")))
 
 @app.get("/scoreboard")
 def get_scoreboard(
