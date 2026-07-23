@@ -1,6 +1,6 @@
 # ESPN Scoreboard
 
-A command-line tool that fetches and displays live sports scoreboard data from the ESPN public API. Supports NBA, MLB, WNBA, and FIFA (soccer).
+A command-line tool and web application that fetches and displays live sports scoreboard data from the ESPN public API. Supports NBA, MLB, WNBA, and FIFA (soccer).
 
 ## Features
 
@@ -9,20 +9,33 @@ A command-line tool that fetches and displays live sports scoreboard data from t
 - Shows per-game statistical leaders for points, rebounds, and assists (NBA/WNBA), and batting stats (MLB)
 - Select any supported league via the `--league` flag
 - Optionally writes raw API response data to disk for inspection or development
+- **FastAPI backend** that exposes scoreboard data as JSON for web clients
+- **Dockerized API** for containerized deployment
 
 ## Project Structure
 
 ```
 espn-scoreboard/
 ├── pyproject.toml
+├── api/
+│   ├── Dockerfile                  # Docker image for the FastAPI backend
+│   ├── main.py                     # FastAPI app — routes and CORS config
+│   ├── models.py                   # Pydantic response models
+│   └── serializers.py              # Converts domain objects to API responses
+├── bin/
+│   ├── build-api                   # Builds the Docker image for the API
+│   ├── run-api                     # Runs the FastAPI dev server locally
+│   └── run-api-docker              # Runs the API in a Docker container
 ├── data/
-│   ├── nba_scoreboard.json        # Raw API response (written with --write-data)
+│   ├── nba_scoreboard.json         # Raw API response (written with --write-data)
 │   ├── mlb_scoreboard.json
 │   ├── wnba_scoreboard.json
 │   └── fifa_scoreboard.json
 └── src/
     ├── espn-scoreboard.py          # Entry point and CLI
     ├── espn_client.py              # League routing, URL constants, fetch logic
+    ├── base.py                     # Abstract base classes: Scoreboard, Game, Team, StatLeader
+    ├── exceptions.py               # Custom exceptions (UnsupportedLeagueError, etc.)
     ├── nba/
     │   ├── scoreboard.py           # NBAScoreboard: top-level container for all games
     │   ├── game.py                 # NBAGame: game details, scores, stat leader lookups
@@ -48,9 +61,10 @@ espn-scoreboard/
 ## Requirements
 
 - Python 3.12+
-- [`uv`](https://github.com/astral-sh/uv) (recommended) or `pip`
+- [`uv`](https://github.com/astral-sh/uv) for dependency management and running scripts
+- Docker (optional, for containerized API)
 
-## Running the Script
+## Running the CLI
 
 ### With `uv` (recommended)
 
@@ -137,6 +151,48 @@ Time: 11:00 AM
 Score: Brazil 2 - Argentina 2 (90:00)
 ```
 
+## FastAPI Backend
+
+The `api/` directory contains a FastAPI application that serves scoreboard data as JSON. It reuses the fetch and parsing logic from `src/espn_client.py` — the CLI remains fully independent.
+
+### API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/leagues` | Returns the list of supported league identifiers |
+| `GET` | `/config` | Returns runtime configuration (e.g., poll interval) |
+| `GET` | `/scoreboard` | Returns scoreboard data for a given league and optional date |
+
+**`GET /scoreboard` query parameters:**
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `league` | Yes | League identifier: `nba`, `mlb`, `wnba`, `fifa` |
+| `date` | No | Date in `YYYYMMDD` format. Defaults to today |
+
+### Running the API Locally
+
+Install dependencies and start the dev server:
+
+```bash
+uv sync
+bin/run-api
+```
+
+The API will be available at `http://localhost:8000`. Interactive docs are at `http://localhost:8000/docs`.
+
+### Running the API with Docker
+
+```bash
+# Build the image
+bin/build-api
+
+# Run the container
+bin/run-api-docker
+```
+
+The container exposes port `8000`. The `POLL_INTERVAL_MS` environment variable controls the client poll interval (default: `120000`ms).
+
 ## Architecture Overview
 
 The codebase is organized around a simple parsing pipeline:
@@ -147,7 +203,13 @@ The codebase is organized around a simple parsing pipeline:
 4. **Enrich** — Each `Team` holds a list of `StatLeader` objects parsed from the `leaders` field (NBA, MLB, WNBA).
 5. **Display** — `scoreboard.print_games()` renders a formatted summary to stdout.
 
-Each layer is a plain Python `dataclass` with a `from_dict()` class method. FIFA follows a simplified version of this pattern (no team-level stat leaders). Shared date/time logic lives in `utils/date.py`.
+The FastAPI backend (`api/`) sits alongside the CLI and reuses steps 2–4:
+
+1. **Route** — `main.py` receives HTTP requests and delegates to `espn_client.fetch_espn_data()`.
+2. **Serialize** — `serializers.py` maps domain dataclasses to Pydantic response models defined in `models.py`.
+3. **Respond** — FastAPI serializes the Pydantic models to JSON.
+
+Each domain layer is a plain Python `dataclass` with a `from_dict()` class method. FIFA follows a simplified version of this pattern (no team-level stat leaders). Shared date/time logic lives in `utils/date.py`.
 
 ## Adding a New Sport
 
@@ -157,6 +219,7 @@ To add support for a new sport (e.g., NFL, NHL):
 2. Implement the same `dataclass` + `from_dict()` pattern used in the existing sports packages.
 3. Add a new URL constant and fetch function in `espn_client.py`.
 4. Add the league name to `SUPPORTED_LEAGUES` and wire it into the `match` block in `fetch_espn_data()`.
+5. If the sport has unique stat categories, verify the `serializers.py` mapping handles them correctly.
 
 The ESPN API follows a consistent URL pattern:
 ```
@@ -169,7 +232,7 @@ Detailed plans for larger features — including decisions, reasoning, API contr
 
 | Plan | Description | Status |
 |------|-------------|--------|
-| [Backend API & Web UI](plans/backend-api-and-ui.md) | Add FastAPI backend + React/Vite frontend with Docker Compose, while preserving the CLI | Planning complete |
+| [Backend API & Web UI](plans/backend-api-and-ui.md) | Add FastAPI backend + React/Vite frontend with Docker Compose, while preserving the CLI | API complete; UI in progress |
 
 ## Roadmap
 
