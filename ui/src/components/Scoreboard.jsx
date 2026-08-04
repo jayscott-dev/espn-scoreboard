@@ -6,7 +6,13 @@ function formatTimestamp(date) {
   return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
 
-export default function Scoreboard({ league, pollIntervalMs }) {
+// Converts an <input type="date"> value ("YYYY-MM-DD") to the API's expected
+// "YYYYMMDD" format.
+function toApiDate(isoDate) {
+  return isoDate ? isoDate.replaceAll('-', '') : null;
+}
+
+export default function Scoreboard({ league, date, pollIntervalMs }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,9 +23,12 @@ export default function Scoreboard({ league, pollIntervalMs }) {
 
     async function fetchScoreboard() {
       try {
-        const res = await fetch(
-          `${API_BASE_URL}/scoreboard?league=${encodeURIComponent(league)}`
-        );
+        const params = new URLSearchParams({ league });
+        const apiDate = toApiDate(date);
+        if (apiDate) {
+          params.set('date', apiDate);
+        }
+        const res = await fetch(`${API_BASE_URL}/scoreboard?${params.toString()}`);
         const body = await res.json().catch(() => null);
 
         if (!res.ok) {
@@ -53,7 +62,7 @@ export default function Scoreboard({ league, pollIntervalMs }) {
       cancelled = true;
       clearInterval(intervalId);
     };
-  }, [league, pollIntervalMs]);
+  }, [league, date, pollIntervalMs]);
 
   if (loading) {
     return <p className="text-center text-gray-400">Loading scoreboard…</p>;

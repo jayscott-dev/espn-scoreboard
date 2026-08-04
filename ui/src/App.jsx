@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { API_BASE_URL } from './api.js';
 import LeagueSelector from './components/LeagueSelector.jsx';
+import DateSelector from './components/DateSelector.jsx';
 import Scoreboard from './components/Scoreboard.jsx';
 
 export default function App() {
   const [leagues, setLeagues] = useState([]);
   const [selectedLeague, setSelectedLeague] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [pollIntervalMs, setPollIntervalMs] = useState(120000);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -66,11 +68,14 @@ export default function App() {
             ESPN Scoreboard
           </h1>
           {leagues.length > 0 && (
-            <LeagueSelector
-              leagues={leagues}
-              selectedLeague={selectedLeague}
-              onChange={setSelectedLeague}
-            />
+            <div className="flex items-center gap-3">
+              <DateSelector selectedDate={selectedDate} onChange={setSelectedDate} />
+              <LeagueSelector
+                leagues={leagues}
+                selectedLeague={selectedLeague}
+                onChange={setSelectedLeague}
+              />
+            </div>
           )}
         </div>
       </header>
@@ -85,7 +90,11 @@ export default function App() {
           </p>
         )}
         {!loading && !error && selectedLeague && (
-          <Scoreboard league={selectedLeague} pollIntervalMs={pollIntervalMs} />
+          <Scoreboard
+            league={selectedLeague}
+            date={selectedDate}
+            pollIntervalMs={pollIntervalMs}
+          />
         )}
         {!loading && !error && !selectedLeague && (
           <p className="text-center text-gray-400">No leagues available.</p>

@@ -10,18 +10,36 @@ A command-line tool and web application that fetches and displays live sports sc
 - Select any supported league via the `--league` flag
 - Optionally writes raw API response data to disk for inspection or development
 - **FastAPI backend** that exposes scoreboard data as JSON for web clients
-- **Dockerized API** for containerized deployment
+- **React + Vite web UI** with a league dropdown, date picker, auto-refresh polling, and per-team stat leader highlighting
+- **Dockerized API and UI**, orchestrated together with Docker Compose for a single-command local stack
 
 ## Project Structure
 
 ```
 espn-scoreboard/
 ├── pyproject.toml
+├── docker-compose.yml               # Wires up the api + ui services together
 ├── api/
 │   ├── Dockerfile                  # Docker image for the FastAPI backend
 │   ├── main.py                     # FastAPI app — routes and CORS config
 │   ├── models.py                   # Pydantic response models
 │   └── serializers.py              # Converts domain objects to API responses
+├── ui/
+│   ├── Dockerfile                  # Docker image for the Vite dev server
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── src/
+│       ├── main.jsx                # React entry point
+│       ├── App.jsx                 # Fetches /config + /leagues, holds league/date state
+│       ├── api.js                  # Central API_BASE_URL constant (VITE_API_BASE_URL)
+│       ├── index.css               # Tailwind directives
+│       └── components/
+│           ├── LeagueSelector.jsx  # League dropdown
+│           ├── DateSelector.jsx    # Date picker + "Today" reset
+│           ├── Scoreboard.jsx      # Fetches /scoreboard, polling, loading/error states
+│           ├── GameCard.jsx        # Renders a single game (score, status, leaders)
+│           └── StatLeaders.jsx     # Renders per-team stat leaders, highlights the overall leader
 ├── bin/
 │   ├── build-api                   # Builds the Docker image for the API
 │   ├── run-api                     # Runs the FastAPI dev server locally
@@ -62,7 +80,25 @@ espn-scoreboard/
 
 - Python 3.12+
 - [`uv`](https://github.com/astral-sh/uv) for dependency management and running scripts
-- Docker (optional, for containerized API)
+- Node.js 20+ and `npm` (for running the web UI outside Docker)
+- Docker and Docker Compose (optional, for the containerized API/UI stack)
+
+## Quick Start (Fresh Checkout)
+
+```bash
+git clone <repo-url>
+cd espn-scoreboard
+
+# Run the full web stack (API + UI) with one command
+docker compose up --build
+```
+
+- UI → http://localhost:5173
+- API → http://localhost:8000 (interactive docs at `/docs`)
+
+No local Python or Node install is required for this path — everything runs inside containers. To stop the stack, run `docker compose down`.
+
+Prefer to run things natively instead? See [Running the CLI](#running-the-cli), [Running the API Locally](#running-the-api-locally), and [Running the UI Locally](#running-the-ui-locally) below.
 
 ## Running the CLI
 
@@ -193,6 +229,49 @@ bin/run-api-docker
 
 The container exposes port `8000`. The `POLL_INTERVAL_MS` environment variable controls the client poll interval (default: `120000`ms).
 
+## Web UI
+
+The `ui/` directory contains a React + Vite + Tailwind CSS single-page app that consumes the FastAPI backend. It fetches `/config` and `/leagues` on load, lets you pick a league and date, and polls `/scoreboard` on the configured interval.
+
+### Running the UI Locally
+
+Requires Node.js 20+ and a running API (see above).
+
+```bash
+cd ui
+npm install
+npm run dev
+```
+
+The UI will be available at `http://localhost:5173`. It reads the API's base URL from the `VITE_API_BASE_URL` environment variable (see `ui/.env.example`), falling back to `http://localhost:8000` if unset.
+
+### Running the UI with Docker
+
+```bash
+docker build -t espn-ui ui/
+docker run -p 5173:5173 -e VITE_API_BASE_URL=http://localhost:8000 espn-ui
+```
+
+## Full Stack via Docker Compose
+
+The simplest way to run everything together is Docker Compose, which builds and starts both the API and UI containers:
+
+```bash
+docker compose up --build
+```
+
+- UI → `http://localhost:5173`
+- API → `http://localhost:8000`
+
+Environment variables (with defaults) can be overridden in your shell or a `.env` file next to `docker-compose.yml`:
+
+| Variable | Default | Description |
+|----------|---------|--------------|
+| `POLL_INTERVAL_MS` | `120000` | How often the UI polls `/scoreboard`, in milliseconds |
+| `VITE_API_BASE_URL` | `http://localhost:8000` | Base URL the UI uses to reach the API |
+
+Stop the stack with `docker compose down`. The `ui` service bind-mounts `ui/` into the container, so local source edits are picked up live by the Vite dev server without rebuilding.
+
 ## Architecture Overview
 
 The codebase is organized around a simple parsing pipeline:
@@ -232,7 +311,7 @@ Detailed plans for larger features — including decisions, reasoning, API contr
 
 | Plan | Description | Status |
 |------|-------------|--------|
-| [Backend API & Web UI](plans/backend-api-and-ui.md) | Add FastAPI backend + React/Vite frontend with Docker Compose, while preserving the CLI | API complete; UI in progress |
+| [Backend API & Web UI](plans/backend-api-and-ui.md) | Add FastAPI backend + React/Vite frontend with Docker Compose, while preserving the CLI | Complete |
 
 ## Roadmap
 
