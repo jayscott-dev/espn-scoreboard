@@ -1,6 +1,7 @@
 import requests
 import json
 from dataclasses import dataclass
+from config import settings
 from nba.scoreboard import NBAScoreboard
 from mlb.scoreboard import MLBScoreboard
 from wnba.scoreboard import WNBAScoreboard
@@ -20,6 +21,12 @@ MLB_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard
 WNBA_URL = "https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard"
 FIFA_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
 
+HEADERS = {
+    "User-Agent": settings.espn_user_agent,
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept": "application/json"
+}
+
 @dataclass
 class ClientConfig:
     league: str
@@ -32,7 +39,7 @@ def fetch_nba_scoreboard(date: str | None = None) -> dict:
         params["dates"] = date
     resp = requests.get(
         NBA_URL,
-        headers = {"User-Agent": "nba-scores-learning-script/1.0"},
+        headers = HEADERS,
         params = params,
         timeout = 10,
     )
@@ -45,7 +52,7 @@ def fetch_mlb_scoreboard(date: str | None = None) -> dict:
         params["dates"] = date
     resp = requests.get(
         MLB_URL,
-        headers = {"User-Agent": "mlb-scores-learning-script/1.0"},
+        headers = HEADERS,
         params = params,
         timeout = 10,
     )
@@ -58,7 +65,7 @@ def fetch_wnba_scoreboard(date: str | None = None) -> dict:
         params["dates"] = date
     resp = requests.get(
         WNBA_URL,
-        headers = {"User-Agent": "wnba-scores-learning-script/1.0"},
+        headers = HEADERS,
         params = params,
         timeout = 10,
     )
@@ -71,7 +78,7 @@ def fetch_fifa_scoreboard(date: str | None = None) -> dict:
         params["date"] = date
     resp = requests.get(
         FIFA_URL,
-        headers = {"User-Agent": "fifa-scores-learning-script/1.0"},
+        headers = HEADERS,
         params = params,
         timeout = 10,
     )

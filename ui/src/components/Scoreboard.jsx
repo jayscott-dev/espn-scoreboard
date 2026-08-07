@@ -56,11 +56,15 @@ export default function Scoreboard({ league, date, pollIntervalMs }) {
     setData(null);
     fetchScoreboard();
 
-    const intervalId = setInterval(fetchScoreboard, pollIntervalMs);
+    // Only poll when viewing today's scoreboard (date is null) — older or
+    // future dates are static and don't need to be refetched periodically.
+    const intervalId = date ? null : setInterval(fetchScoreboard, pollIntervalMs);
 
     return () => {
       cancelled = true;
-      clearInterval(intervalId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
     };
   }, [league, date, pollIntervalMs]);
 
