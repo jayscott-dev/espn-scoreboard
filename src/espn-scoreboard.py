@@ -3,6 +3,7 @@
 # /// script
 # dependencies = [
 #   "requests",
+#   "pydantic-settings",
 # ]
 # ///
 
