@@ -4,6 +4,12 @@ from dataclasses import dataclass
 from typing import Optional, Self
 import base
 
+ALLOWED_STAT_TYPES = {
+    "points",
+    "rebounds",
+    "assists",
+}
+
 @dataclass
 class StatLeader(base.StatLeader):
     _team_id: str
@@ -15,6 +21,9 @@ class StatLeader(base.StatLeader):
     @classmethod
     def from_dict(cls, stat_leader: dict) -> Optional[Self]:
         stat_type = stat_leader["name"] 
+        if stat_type not in ALLOWED_STAT_TYPES:
+            return
+
         leaders = stat_leader["leaders"]
         display_name = stat_leader["displayName"]
         if leaders:
