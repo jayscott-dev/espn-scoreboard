@@ -1,13 +1,16 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Optional
-import base 
+
+import base
 
 ALLOWED_STAT_TYPES = {
-    "points",
-    "rebounds",
-    "assists",
+    "rushing",
+    "rushingLeader",
+    "passing",
+    "passingLeader",
+    "receiving",
+    "receivingLeader",
 }
 
 @dataclass
@@ -17,6 +20,7 @@ class StatLeader(base.StatLeader):
     athlete_name: str
     value: int
     display_name: str
+    display_value: str
 
     @classmethod
     def from_dict(cls, stat_leader: dict) -> Optional["StatLeader"]:
@@ -30,22 +34,12 @@ class StatLeader(base.StatLeader):
             return cls (
                 _team_id = leaders[0]["team"]["id"],
                 stat_type = stat_type,
-                athlete_name = leaders[0]["athlete"]["shortName"],
+                athlete_name = leaders[0]["athlete"]["displayName"],
                 value = leaders[0]["value"],
-                display_name = display_name.split(" ")[0]
+                display_name = display_name.split(" ")[0],
+                display_value = leaders[0]["displayValue"],
             )
-        
-    @classmethod
-    def overall_stat_leader(cls, leaders: list[StatLeader]) -> Optional[StatLeader]:
-        overall_leader = None
-        for leader in leaders:
-            if overall_leader is None:
-                overall_leader = leader 
-            else:
-                if leader.value > overall_leader.value:
-                    overall_leader = leader
-        return overall_leader
-            
+
     @property
     def team_id(self) -> str:
         return self._team_id
@@ -60,5 +54,4 @@ class StatLeader(base.StatLeader):
 
     @property
     def stat_value(self) -> str:
-        return str(self.value)
-
+        return str(self.display_value) 

@@ -7,6 +7,7 @@ class NFLTeam(Team):
     _id: str
     _name: str
     _score: str
+    _record: TeamRecord
 
     @classmethod
     def from_dict(cls, competitor: dict) -> NFLTeam:
@@ -18,7 +19,7 @@ class NFLTeam(Team):
             #home = ("home" == competitor.get("homeAway", "")),
             _score = competitor.get("score", "0"),
             #leaders = [leader for raw in competitor.get("leaders", []) if (leader := StatLeader.from_dict(raw)) is not None],
-            #_record = TeamRecord.from_list(competitor.get("records", [])),
+            _record = TeamRecord.from_list(competitor.get("records", [])),
         )
     
     @property
@@ -33,6 +34,35 @@ class NFLTeam(Team):
     def score(self) -> str:
         return self._score
     
-    #@property
-    #def record(self) -> str:
-    #    return self._record.overall 
+    @property
+    def record(self) -> str:
+        return self._record.overall 
+
+    def build_score_display(self) -> str:
+        return f"{self.name}({self.record}) {self.score}"
+
+@dataclass
+class TeamRecord:
+    overall: str
+    home: str
+    away: str
+
+    @classmethod
+    def from_list(cls, records: list) -> TeamRecord:
+        home_record = "" 
+        away_record = ""
+        overall_record = ""
+
+        for record in records:
+            match record["type"]:
+                case "home":
+                    home_record = record["summary"]
+                case "away":
+                    away_record = record["summary"]
+                case _:
+                    overall_record = record["summary"]
+        return cls (
+            home = home_record,
+            away = away_record,
+            overall = overall_record,
+        )
