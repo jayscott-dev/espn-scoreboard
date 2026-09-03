@@ -10,6 +10,7 @@ class NFLGame(Game):
     name: str
     date: str
     teams: dict
+    metadata: GameMetadata
 
     @classmethod
     def from_dict(cls, game: dict) -> NFLGame:
@@ -23,6 +24,7 @@ class NFLGame(Game):
             name = game.get("name", ""),
             teams = teams,
             date = game.get("date", ""),
+            metadata = GameMetadata.from_dict(competitions["status"]),
         )
 
     @property
@@ -32,6 +34,10 @@ class NFLGame(Game):
     @property
     def start_date(self) -> str:
         return self.date
+
+    @property
+    def formatted_date(self) -> str:
+        return date_utils.format_dt(self.date, "%m/%d/%Y (%A)")
     
     @property
     def start_time(self) -> str:
@@ -39,19 +45,12 @@ class NFLGame(Game):
     
     @property
     def status(self) -> str:
-        # return self.metadata.status
-        return "N/A"
+        return self.metadata.status
     
     @property
     def status_detail(self) -> str:
-        # return self.metadata.detail
-        return "N/A"
+        return self.metadata.detail
     
-    #@property
-    #def series_info(self) -> str | None:
-    #    if self.series_data:
-    #      return f"{self.series_data} {self.build_series_record() if self.series_records else ""}"
-        
     @property
     def home_team(self) -> Team:
         return self.teams["home"]
@@ -62,6 +61,24 @@ class NFLGame(Game):
     
     def print_game_data(self):
         print(f"\n{game_title(self)}")
+        print(f"{self.formatted_date} - {self.start_time}")
+        print(f"{'Final' if self.metadata.status == "Final" else 'Current'} Score: {self.teams["away"].build_score_display()} - {self.teams["home"].build_score_display()}")
+
+@dataclass
+class GameMetadata:
+    status: str
+    detail: str
+
+    @classmethod
+    def from_dict(cls, metdata: dict) -> GameMetadata:
+        status_type = metdata["type"]
+
+        return cls (
+            status = status_type["description"],
+            detail = status_type["detail"],
+        )
 
 def game_title(game: NFLGame) -> str:
-    return f"{game.name}"
+    game_status = game.metadata.detail if game.metadata.status == "In Progress" else game.metadata.status
+
+    return f"{game.name} ({game_status})"
