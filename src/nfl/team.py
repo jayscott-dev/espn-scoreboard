@@ -1,6 +1,8 @@
 from __future__ import annotations
 from base import Team
 from dataclasses import dataclass
+from nfl.stat_leader import StatLeader
+from typing import Optional
 
 @dataclass
 class NFLTeam(Team):
@@ -15,10 +17,7 @@ class NFLTeam(Team):
         return cls(
             _id = team.get("id", ""),
             _name = team.get("name", ""),
-            #display_name = team.get("displayName", ""),
-            #home = ("home" == competitor.get("homeAway", "")),
             _score = competitor.get("score", "0"),
-            #leaders = [leader for raw in competitor.get("leaders", []) if (leader := StatLeader.from_dict(raw)) is not None],
             _record = TeamRecord.from_list(competitor.get("records", [])),
         )
     

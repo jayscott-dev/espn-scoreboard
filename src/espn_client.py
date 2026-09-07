@@ -78,7 +78,7 @@ def fetch_wnba_scoreboard(date: str | None = None) -> dict:
 def fetch_fifa_scoreboard(date: str | None = None) -> dict:
     params = {}
     if date:
-        params["date"] = date
+        params["dates"] = date
     resp = requests.get(
         FIFA_URL,
         headers = HEADERS,
@@ -91,7 +91,7 @@ def fetch_fifa_scoreboard(date: str | None = None) -> dict:
 def fetch_nfl_scoreboard(date: str | None = None) -> dict:
     params = {}
     if date:
-        params["date"] = date
+        params["dates"] = date
     resp = requests.get(
         NFL_URL,
         headers = HEADERS,
