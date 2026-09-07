@@ -3,14 +3,12 @@ from dataclasses import dataclass
 from typing import Optional
 
 import base
+import re
 
 ALLOWED_STAT_TYPES = {
     "rushing",
-    "rushingLeader",
     "passing",
-    "passingLeader",
     "receiving",
-    "receivingLeader",
 }
 
 @dataclass
@@ -24,7 +22,7 @@ class StatLeader(base.StatLeader):
 
     @classmethod
     def from_dict(cls, stat_leader: dict) -> Optional["StatLeader"]:
-        stat_type = stat_leader["name"] 
+        stat_type = re.split(r'(?=[A-Z])', stat_leader["name"])[0] 
         if stat_type not in ALLOWED_STAT_TYPES:
             return
 
@@ -39,6 +37,17 @@ class StatLeader(base.StatLeader):
                 display_name = display_name.split(" ")[0],
                 display_value = leaders[0]["displayValue"],
             )
+
+    @classmethod
+    def overall_stat_leader(cls, leaders: list[StatLeader]) -> Optional[StatLeader]:
+        overall_leader = None
+        for leader in leaders:
+            if overall_leader is None:
+                overall_leader = leader 
+            else:
+                if leader.value > overall_leader.value:
+                    overall_leader = leader
+        return overall_leader
 
     @property
     def team_id(self) -> str:
